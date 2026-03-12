@@ -7,35 +7,34 @@
 ---
 
 ## 🌐 Cloud URLs (Railway)
-- **Auth Service:** [https://authservice-production-e242.up.railway.app](https://authservice-production-e242.up.railway.app)
-- **Task Service:** [https://taskservice-production-f87d.up.railway.app](https://taskservice-production-f87d.up.railway.app)
-- **User Service:** [https://userservice-production-6411.up.railway.app](https://userservice-production-6411.up.railway.app)
+- **API Gateway (Entry Point):** `https://[GATEWAY_URL]` (ใช้ URL นี้อันเดียวเรียกได้ทุก Service)
+- **Auth Service (Internal):** `auth-service.railway.internal:3001`
+- **Task Service (Internal):** `task-service.railway.internal:3002`
+- **User Service (Internal):** `user-service.railway.internal:3003`
 
 ---
 
 ## 🏗️ Architecture Overview
-Cloud version architecture using the **Database-per-Service** pattern.
+Cloud version architecture using the **API Gateway** pattern (Bonus Option B).
 
 ```mermaid
 graph TD
-    User((User/Client)) --> Auth[🔑 Auth Service]
-    User --> Task[📋 Task Service]
-    User --> Profile[👤 User Service]
-
-    subgraph "Railway Cloud Platform"
-        Auth --> AuthDB[(🗄️ auth-db PostgreSQL)]
-        Task --> TaskDB[(🗄️ task-db PostgreSQL)]
-        Profile --> UserDB[(🗄️ user-db PostgreSQL)]
+    User((User/Client)) --> GW[🕸️ Nginx API Gateway]
+    
+    subgraph "Railway Private Network"
+        GW --> Auth[🔑 Auth Service]
+        GW --> Task[📋 Task Service]
+        GW --> Profile[👤 User Service]
         
-        Note[JWT_SECRET Shared] -.-> Auth
-        Note -.-> Task
-        Note -.-> Profile
+        Auth --> AuthDB[(🗄️ auth-db)]
+        Task --> TaskDB[(🗄️ task-db)]
+        Profile --> UserDB[(🗄️ user-db)]
     end
 ```
 
 ### Gateway Strategy
-- **ที่เลือก:** Option A (Frontend เรียก URL ของแต่ละ service โดยตรง)
-- **เหตุผล:** เนื่องจากมีจำนวน Service ไม่มาก การเรียกตรงช่วยลดความซับซ้อนในการ Config และทำให้การจัดการ Environment Variables ของแต่ละ Service บน Railway ทำได้ง่ายขึ้น รวมถึงสอดคล้องกับข้อกำหนดเบื้องต้นของ Lab นี้
+- **ที่เลือก:** Option B (Nginx API Gateway)
+- **เหตุผล:** เพื่อความเป็นระเบียบและปลอดภัย โดยใช้ Nginx เป็นด่านหน้า (Entry Point) เพียงจุดเดียว ช่วยซ่อนโครงสร้างภายใน (Internal URLs) และจัดการเรื่อง CORS หรือ Routing ได้จากที่เดียว สอดคล้องกับแนวทาง Scalable Microservices
 
 ---
 
