@@ -1,0 +1,69 @@
+version: '3.8'
+
+services:
+  auth-db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: authdb
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: secret
+    ports:
+      - "5431:5432"
+    volumes:
+      - ./auth-service/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  task-db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: taskdb
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: secret
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./task-service/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  user-db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: userdb
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: secret
+    ports:
+      - "5433:5432"
+    volumes:
+      - ./user-service/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  auth-service:
+    build: ./auth-service
+    ports:
+      - "3001:3001"
+    environment:
+      DATABASE_URL: postgresql://admin:secret@auth-db:5432/authdb
+      JWT_SECRET: your-shared-jwt-secret-here
+      JWT_EXPIRE: 24h
+      PORT: 3001
+    depends_on:
+      - auth-db
+
+  task-service:
+    build: ./task-service
+    ports:
+      - "3002:3002"
+    environment:
+      DATABASE_URL: postgresql://admin:secret@task-db:5432/taskdb
+      JWT_SECRET: your-shared-jwt-secret-here
+      PORT: 3002
+    depends_on:
+      - task-db
+
+  user-service:
+    build: ./user-service
+    ports:
+      - "3003:3003"
+    environment:
+      DATABASE_URL: postgresql://admin:secret@user-db:5432/userdb
+      JWT_SECRET: your-shared-jwt-secret-here
+      PORT: 3003
+    depends_on:
+      - user-db
