@@ -4,7 +4,7 @@
 **Student 2:** [Name] [ID]
 
 ## Cloud URLs (Railway)
-- **Auth Service:** [AUTH_URL]
+- **Auth Service:** [AUTH_URL]///
 - **Task Service:** [TASK_URL]
 - **User Service:** [USER_URL]
 
