@@ -7,8 +7,8 @@
 ---
 
 ## 🌐 Cloud URLs (Railway)
-- **API Gateway (Entry Point):** `https://[GATEWAY_URL]` (ใช้ URL นี้อันเดียวเรียกได้ทุก Service)
-- **Auth Service (Internal):** `auth-service.railway.internal:3001`
+- **API Gateway (Entry Point):** [https://api-gateway-production-e7a3.up.railway.app](https://api-gateway-production-e7a3.up.railway.app)
+- **Auth Service (Internal):** `auth_service.railway.internal:3001`
 - **Task Service (Internal):** `task-service.railway.internal:3002`
 - **User Service (Internal):** `user-service.railway.internal:3003`
 
