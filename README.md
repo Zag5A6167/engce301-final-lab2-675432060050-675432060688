@@ -10,7 +10,7 @@
 
 ## Architecture Overview
 This project implements a microservice architecture with the **Database-per-Service** pattern.
-
+/
 ```mermaid
 graph TD
     User((User/Client)) --> Auth[Auth Service :3001]
