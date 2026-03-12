@@ -7,9 +7,9 @@
 ---
 
 ## 🌐 Cloud URLs (Railway)
-- **Auth Service:** [AUTH_URL]
-- **Task Service:** [TASK_URL]
-- **User Service:** [USER_URL]
+- **Auth Service:** [https://authservice-production-e242.up.railway.app](https://authservice-production-e242.up.railway.app)
+- **Task Service:** [https://taskservice-production-f87d.up.railway.app](https://taskservice-production-f87d.up.railway.app)
+- **User Service:** [https://userservice-production-6411.up.railway.app](https://userservice-production-6411.up.railway.app)
 
 ---
 

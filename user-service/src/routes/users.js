@@ -82,4 +82,35 @@ router.get('/all', authMiddleware, async (req, res) => {
   }
 });
 
+// DELETE /api/users/:id (JWT Protected)
+router.delete('/:id', authMiddleware, async (req, res) => {
+  const { id } = req.params;
+
+  // For security, only allow users to delete their own profile (or add admin role check if needed)
+  if (parseInt(id) !== req.user.sub) {
+    return res.status(403).json({ error: 'You can only delete your own profile' });
+  }
+
+  try {
+    const result = await pool.query('DELETE FROM user_profiles WHERE user_id = $1 RETURNING *', [id]);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Profile not found' });
+    }
+
+    await logEvent({
+      level: 'WARN',
+      event: 'PROFILE_DELETED',
+      userId: req.user.sub,
+      message: `User ${req.user.username} deleted their profile`,
+      meta: { profileId: id }
+    });
+
+    res.json({ message: 'Profile deleted successfully' });
+  } catch (err) {
+    console.error('[USER] Delete profile error:', err.message);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
 module.exports = router;
